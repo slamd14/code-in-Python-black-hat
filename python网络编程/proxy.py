@@ -42,7 +42,7 @@ def receive_from(connection):
     connection.settimeout(5)  # 超时时间默认为5秒，如果跨国转发流量，或者网络状况很差的话，5s可能不太合适  # 阻塞5s
     try:
         while True:
-            data = connection.recv(4096)
+            data = connection.recv(4096)  # 当connection.recv(4096)还没有接收到数据的时候，并不会阻塞在这里! 非阻塞式的!
             if not data:
                 break
             buffer += data
