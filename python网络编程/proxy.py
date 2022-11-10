@@ -16,7 +16,7 @@ def hexdump(src, length=16, show=True):
     :return: 格式化后的src数据
     """
     if isinstance(src, bytes):
-        src = src.decode()
+        src = src.decode(errors='replace')  # 尝试代理ssh的时候遇到了解码错误问题(因为ssh是加密通信)，加上errors='replace放宽解码要求
 
     results = list()
     for i in range(0, len(src), length):
@@ -28,8 +28,8 @@ def hexdump(src, length=16, show=True):
     if show:
         for line in results:
             print(line)
-        else:
-            return results
+    else:
+        return results
 
 
 def receive_from(connection):
@@ -39,7 +39,7 @@ def receive_from(connection):
     :return: 将buffer返回给调用方
     """
     buffer = b""  # 存储socket对象返回的数据
-    connection.settimeout(20)  # 超时时间默认为5秒，如果跨国转发流量，或者网络状况很差的话，5s可能不太合适
+    connection.settimeout(5)  # 超时时间默认为5秒，如果跨国转发流量，或者网络状况很差的话，5s可能不太合适  # 阻塞5s
     try:
         while True:
             data = connection.recv(4096)
@@ -108,7 +108,7 @@ def proxy_handler(client_socket, remote_host, remote_port, receive_first):
             client_socket.send(remote_buffer)
             print("[<==] Sent to localhost.")
 
-        if not len(local_buffer) or not len(remote_buffer):
+        if len(local_buffer) == 0 and len(remote_buffer) == 0:
             client_socket.close()
             remote_socket.close()
             print("[*] No more data. Closing connections")
