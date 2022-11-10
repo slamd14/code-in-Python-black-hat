@@ -5,7 +5,6 @@ import subprocess  # 进程创建接口
 import sys
 import textwrap
 import threading
-import time
 
 
 def execute(cmd):
