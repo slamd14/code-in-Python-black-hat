@@ -1,7 +1,7 @@
 import argparse  # 创建一个带命令行界面的程序
 import socket
 import shlex
-import subprocess  # 进程创建接口
+import subprocess  # 进程创建接口,用以执行指令
 import sys
 import textwrap
 import threading
